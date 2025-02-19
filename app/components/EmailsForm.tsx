@@ -70,17 +70,45 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
                 required
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <Label className="text-sm font-medium">Features Updated</Label>
               <Textarea
                 value={formData.features || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, features: e.target.value })
-                }
+                onChange={(e) => {
+                  const newValue = e.target.value
+                    .split("\n")
+                    .map((line) =>
+                      line.startsWith("• ") ? line : `• ${line.trim()}`
+                    )
+                    .join("\n");
+                  setFormData({ ...formData, features: newValue });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Prevent default new line
+                    setFormData((prev) => ({
+                      ...prev,
+                      features:
+                        (prev.features ? prev.features + "\n" : "") + "• ",
+                    }));
+                  }
+                }}
                 placeholder="List the updated features (one per line)"
                 required
                 rows={4}
               />
+
+              {/* Clear Button (Only Show When There's Text) */}
+              {formData.features && formData.features.trim() !== "" && (
+                <Button
+                  variant={"ghost"}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, features: "" })}
+                  className="text-sm absolute -top-3 right-2 text-red-500 hover:text-red-700 transition"
+                >
+                  Clear
+                </Button>
+              )}
             </div>
           </>
         ) : (
