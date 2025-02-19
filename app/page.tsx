@@ -11,10 +11,10 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen w-full flex flex-col items-center justify-center bg-white">
+    <main className="min-h-screen w-full flex flex-col px-12 py-8 bg-white">
       <h1 className="text-2xl font-bold mb-8">EazySend</h1>
       {/* main wrapper changes in height based on content */}
-      <div className="flex flex-col w-[80vw]">
+      <div className="grid grid-cols-2 gap-8">
         <div className="bg-white w-full p-6 rounded-lg shadow-sm border">
           <EmailForm onSubmit={handleSubmit} />
         </div>

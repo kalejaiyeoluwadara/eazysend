@@ -47,7 +47,7 @@ Thank you for your swift action, and let's ensure a smooth deployment.
   };
 
   return (
-    <div className="relative my-6 bg-gray-100 p-4 rounded-lg border">
+    <div className="relative  bg-gray-100 p-4 rounded-lg border">
       <Toaster />
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">Email Preview</h2>
