@@ -1,36 +1,54 @@
-import { EmailFormData } from "./EmailsForm";
+"use client";
+import { FiCopy } from "react-icons/fi";
+import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 interface EmailPreviewProps {
-  emailData: EmailFormData;
+  emailData: {
+    type: "mail" | "reminder";
+    title?: string;
+    features?: string;
+    deploymentName?: string;
+  };
 }
 
 export const EmailPreview = ({ emailData }: EmailPreviewProps) => {
-  const getEmailContent = () => {
+  const [copied, setCopied] = useState(false);
+
+  const generateEmailContent = () => {
     if (emailData.type === "mail") {
-      return `${emailData.title}
-
-Hi Team,
-
-I hope this message finds you well. We are excited to inform you that a set of new fixes are ready for deployment. Please find below the list of fixes:
-
-${emailData.features}
-
-Please begin the deployment process to the specified environments as soon as possible. The testing team has been copied on this email and will initiate testing once the deployment is completed.
-
-Thank you for your swift action, and let's ensure a smooth deployment.`;
+      return `Subject: ${emailData.title}\n\nFeatures Updated:\n${emailData.features}`;
     } else {
-      return `Dear Team,
+      return `Reminder for deployment: ${emailData.deploymentName}`;
+    }
+  };
 
-This is a gentle reminder to deploy ${emailData.deploymentName}. Thank you for your swift response.`;
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(generateEmailContent());
+      setCopied(true);
+      toast.success("Copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy!");
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
-      <h3 className="font-medium mb-4">Preview</h3>
-      <pre className="whitespace-pre-wrap font-sans text-sm">
-        {getEmailContent()}
+    <div className="relative my-6 bg-gray-100 p-4 rounded-lg border">
+      <Toaster />
+      <h2 className="text-lg font-semibold mb-2">Email Preview</h2>
+      <pre className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md">
+        {generateEmailContent()}
       </pre>
+
+      {/* Copy button */}
+      <button
+        onClick={handleCopy}
+        className="absolute top-3 right-3 p-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
+      >
+        <FiCopy className="w-5 h-5 text-gray-600" />
+      </button>
     </div>
   );
 };

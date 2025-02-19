@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { motion } from "framer-motion"; // Import motion
 
 interface EmailFormProps {
   onSubmit: (data: EmailFormData) => void;
@@ -21,6 +22,7 @@ export interface EmailFormData {
 export const EmailForm = ({ onSubmit }: EmailFormProps) => {
   const [formData, setFormData] = useState<EmailFormData>({
     type: "mail",
+    title: "Request to deploy ",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,7 +31,7 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <motion.form layout onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label className="text-sm font-medium">Email Type</Label>
         <RadioGroup
@@ -50,49 +52,55 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
         </RadioGroup>
       </div>
 
-      {formData.type === "mail" ? (
-        <>
+      {/* Animate height changes when switching form fields */}
+      <motion.div
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="space-y-4"
+      >
+        {formData.type === "mail" ? (
+          <>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Deployment Title</Label>
+              <Input
+                value={formData.title || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                placeholder="e.g., Request to deploy TMS admin to TEST"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Features Updated</Label>
+              <Textarea
+                value={formData.features || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, features: e.target.value })
+                }
+                placeholder="List the updated features (one per line)"
+                required
+                rows={4}
+              />
+            </div>
+          </>
+        ) : (
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Deployment Title</Label>
+            <Label className="text-sm font-medium">Deployment Name</Label>
             <Input
-              value={formData.title || ""}
+              value={formData.deploymentName || ""}
               onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
+                setFormData({ ...formData, deploymentName: e.target.value })
               }
-              placeholder="e.g., Request to deploy TMS admin to TEST"
+              placeholder="e.g., TMS admin website TEST"
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Features Updated</Label>
-            <Textarea
-              value={formData.features || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, features: e.target.value })
-              }
-              placeholder="List the updated features (one per line)"
-              required
-              rows={4}
-            />
-          </div>
-        </>
-      ) : (
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Deployment Name</Label>
-          <Input
-            value={formData.deploymentName || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, deploymentName: e.target.value })
-            }
-            placeholder="e.g., TMS admin website TEST"
-            required
-          />
-        </div>
-      )}
+        )}
+      </motion.div>
 
       <Button type="submit" className="w-full">
         Generate Email
       </Button>
-    </form>
+    </motion.form>
   );
 };
