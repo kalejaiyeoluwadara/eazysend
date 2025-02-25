@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 interface EmailPreviewProps {
   emailData: {
-    type: "mail" | "reminder";
+    type: "mail" | "reminder" | "tasks";
     title?: string;
     features?: string;
     deploymentName?: string;

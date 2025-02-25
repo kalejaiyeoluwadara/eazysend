@@ -13,7 +13,7 @@ interface EmailFormProps {
 }
 
 export interface EmailFormData {
-  type: "mail" | "reminder";
+  type: "mail" | "reminder" | "tasks";
   title?: string;
   features?: string;
   deploymentName?: string;
@@ -37,9 +37,12 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
         <RadioGroup
           defaultValue={formData.type}
           onValueChange={(value) =>
-            setFormData({ ...formData, type: value as "mail" | "reminder" })
+            setFormData({
+              ...formData,
+              type: value as "mail" | "reminder" | "tasks",
+            })
           }
-          className="flex gap-4"
+          className="flex sm:flex-row flex-col gap-4"
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="mail" id="mail" />
@@ -48,6 +51,10 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="reminder" id="reminder" />
             <Label htmlFor="reminder">Reminder</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="tasks" id="tasks" />
+            <Label htmlFor="tasks">Tasks</Label>
           </div>
         </RadioGroup>
       </div>
@@ -72,6 +79,69 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
             </div>
             <div className="space-y-2 relative">
               <Label className="text-sm font-medium">Features Updated</Label>
+              <Textarea
+                value={formData.features || ""}
+                onChange={(e) => {
+                  const newValue = e.target.value
+                    .split("\n")
+                    .map((line) =>
+                      line.startsWith("• ") ? line : `• ${line.trim()}`
+                    )
+                    .join("\n");
+                  setFormData({ ...formData, features: newValue });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Prevent default new line
+                    setFormData((prev) => ({
+                      ...prev,
+                      features:
+                        (prev.features ? prev.features + "\n" : "") + "• ",
+                    }));
+                  }
+                }}
+                placeholder="List the updated features (one per line)"
+                required
+                rows={4}
+              />
+
+              {/* Clear Button (Only Show When There's Text) */}
+              {formData.features && formData.features.trim() !== "" && (
+                <Button
+                  variant={"ghost"}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, features: "" })}
+                  className="text-sm absolute -top-3 right-2 text-red-500 hover:text-red-700 transition"
+                >
+                  Clear
+                </Button>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Deployment Name</Label>
+            <Input
+              value={formData.deploymentName || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, deploymentName: e.target.value })
+              }
+              placeholder="e.g., TMS admin website TEST"
+              required
+            />
+          </div>
+        )}
+      </motion.div>
+      <motion.div
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="space-y-4"
+      >
+        {formData.type === "tasks" ? (
+          <>
+            <div className="space-y-2 relative">
+              <Label className="text-sm font-medium">
+                Tasks Done for the day
+              </Label>
               <Textarea
                 value={formData.features || ""}
                 onChange={(e) => {
