@@ -1,4 +1,3 @@
-// Types and interfaces
 export interface EmailFormData {
   type: "mail" | "reminder";
   title?: string;

@@ -1,14 +1,11 @@
 "use client";
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Copy, Check } from "lucide-react";
-import { TaskListData } from "../models/Task";
+import { TaskListPreviewProps } from "../models/Task";
+import CopyButton from "./CopyButton";
+import { toast } from "sonner";
 
-interface TaskListPreviewProps {
-    taskData: TaskListData;
-}
+
 
 export const TaskListPreview = ({ taskData }: TaskListPreviewProps) => {
     const [copied, setCopied] = useState(false);
@@ -17,9 +14,11 @@ export const TaskListPreview = ({ taskData }: TaskListPreviewProps) => {
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const day = date.getDate();
-        const month = date.toLocaleString('default', { month: 'long' });
+        const month = date.toLocaleString("default", { month: "long" });
         const year = date.getFullYear();
-        const suffix = ['th', 'st', 'nd', 'rd'][day % 10 > 3 ? 0 : (day % 100 - day % 10 != 10 ? day % 10 : 0)];
+        const suffix = ["th", "st", "nd", "rd"][
+            day % 10 > 3 ? 0 : (day % 100) - (day % 10) != 10 ? day % 10 : 0
+        ];
 
         return `${day}${suffix} ${month}, ${year}`;
     };
@@ -27,8 +26,8 @@ export const TaskListPreview = ({ taskData }: TaskListPreviewProps) => {
     // Create formatted text for clipboard
     const getFormattedText = () => {
         return `Date: ${formatDate(taskData.date)}
-Team Member: ${taskData.teamMember}
-${taskData.tasks}`;
+        Team Member: ${taskData.teamMember}
+        ${taskData.tasks}`;
     };
 
     // Handle copy to clipboard
@@ -43,31 +42,16 @@ ${taskData.tasks}`;
             setTimeout(() => {
                 setCopied(false);
             }, 2000);
+
+            toast.success("Copied to clipboard!");
         } catch (err) {
-            console.error('Failed to copy text: ', err);
+            console.error("Failed to copy text: ", err);
         }
     };
 
     return (
         <Card className="w-full relative">
-            <Button
-                onClick={handleCopy}
-                variant="outline"
-                size="sm"
-                className="absolute top-4 right-4 bg-white"
-            >
-                {copied ? (
-                    <>
-                        <Check className="h-4 w-4 mr-1" />
-                    </>
-                ) : (
-                    <>
-                        <Copy className="h-4 w-4 mr-1" />
-                        <span>Copy</span>
-                    </>
-                )}
-            </Button>
-
+            <CopyButton copied={copied} handleCopy={handleCopy} />
             <CardContent className="p-6">
                 <div className="prose max-w-none">
                     <div className="mb-4">
@@ -75,8 +59,10 @@ ${taskData.tasks}`;
                         <p className="">Team Member: {taskData.teamMember}</p>
                     </div>
                     <div className="whitespace-pre-line">
-                        {taskData.tasks.split('\n').map((task, index) => (
-                            <p key={index} className="mb-1">{task}</p>
+                        {taskData.tasks.split("\n").map((task, index) => (
+                            <p key={index} className="mb-1">
+                                {task}
+                            </p>
                         ))}
                     </div>
                 </div>

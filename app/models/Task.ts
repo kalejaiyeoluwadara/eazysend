@@ -14,3 +14,6 @@ export interface TaskListData {
   tasks: string;
   id?: string;
 }
+export interface TaskListPreviewProps {
+  taskData: TaskListData;
+}

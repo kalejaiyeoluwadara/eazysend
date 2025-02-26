@@ -1,11 +1,9 @@
 "use client";
 
-import { FiCopy } from "react-icons/fi";
 import { useState } from "react";
 import { EmailPreviewProps } from "../models/IEmail";
 import { toast } from "sonner";
-import { Check, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import CopyButton from "./CopyButton";
 
 export const EmailPreview = ({ emailData }: EmailPreviewProps) => {
   const [copied, setCopied] = useState(false);
@@ -44,23 +42,7 @@ Thank you for your swift action, and let's ensure a smooth deployment.
     <div className="relative  bg-gray-100 p-4 rounded-lg border">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Email Preview</h2>
-        <Button
-          onClick={handleCopy}
-          variant="outline"
-          size="sm"
-          className="absolute top-4 right-4 bg-white"
-        >
-          {copied ? (
-            <>
-              <Check className="h-4 w-4 mr-1" />
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4 mr-1" />
-              <span>Copy</span>
-            </>
-          )}
-        </Button>
+        <CopyButton copied={copied} handleCopy={handleCopy} />
       </div>
       <pre className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md bg-white">
         {generateEmailContent()}
