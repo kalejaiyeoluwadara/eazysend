@@ -2,8 +2,10 @@
 
 import { FiCopy } from "react-icons/fi";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import { EmailPreviewProps } from "../models/IEmail";
+import { toast } from "sonner";
+import { Check, Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const EmailPreview = ({ emailData }: EmailPreviewProps) => {
   const [copied, setCopied] = useState(false);
@@ -40,18 +42,25 @@ Thank you for your swift action, and let's ensure a smooth deployment.
 
   return (
     <div className="relative  bg-gray-100 p-4 rounded-lg border">
-      <Toaster />
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Email Preview</h2>
-        <button
+        <Button
           onClick={handleCopy}
-          className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 transition flex items-center gap-2"
+          variant="outline"
+          size="sm"
+          className="absolute top-4 right-4 bg-white"
         >
-          <FiCopy className="w-5 h-5 text-gray-600" />
-          <span className="text-sm text-gray-600">
-            {copied ? "Copied!" : "Copy"}
-          </span>
-        </button>
+          {copied ? (
+            <>
+              <Check className="h-4 w-4 mr-1" />
+            </>
+          ) : (
+            <>
+              <Copy className="h-4 w-4 mr-1" />
+              <span>Copy</span>
+            </>
+          )}
+        </Button>
       </div>
       <pre className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md bg-white">
         {generateEmailContent()}

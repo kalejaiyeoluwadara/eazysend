@@ -12,7 +12,7 @@ import { TaskForm } from "./components/TaskForm";
 import { SavedTasksList } from "./components/SavedTaskList";
 import { TaskListPreview } from "./components/TaskList";
 import { TaskListData } from "./models/Task";
-
+import { Toaster, toast } from 'sonner';
 export default function Home() {
   const [emailData, setEmailData] = useState<EmailFormData | null>(null);
   const [taskData, setTaskData] = useState<TaskListData | null>(null);
@@ -44,6 +44,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen w-full flex flex-col px-12 py-8 bg-white">
+      <Toaster />
       <div className="w-full flex items-start mb-4 gap-3">
         <Link href={"https://outlook.office365.com/mail/"}>
           <Image alt="outlook" className="h-8 w-8" src={outlook} />

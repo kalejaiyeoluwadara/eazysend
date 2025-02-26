@@ -6,8 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { TeamMemberModal } from "./TeamMemberModal";
-import { User, Edit2 } from "lucide-react";
+import { User, Edit2, CheckCircle } from "lucide-react";
+
 import { TaskFormProps, TaskListData } from "../models/Task";
+import { toast } from "sonner";
 
 
 
@@ -60,13 +62,17 @@ export const TaskForm = ({ onSubmit }: TaskFormProps) => {
         }
     };
 
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Generate a unique ID for storage
         const taskData = {
             ...formData,
             id: Date.now().toString()
         };
+
+        // Enhanced toast with Lucide icon
+        toast.success('Task list generated and saved successfully.');
+
         onSubmit(taskData);
     };
 

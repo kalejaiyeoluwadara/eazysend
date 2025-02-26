@@ -7,6 +7,7 @@ import { EmailFormData, EmailFormProps } from "../models/IEmail";
 import { EmailTypeSelector } from "./EmailTypeSelector";
 import { DeploymentMailFields } from "./DeploymentMailFields";
 import { ReminderFields } from "./ReminderFields";
+import { toast } from "sonner";
 
 // Main EmailForm Component
 export const EmailForm = ({ onSubmit }: EmailFormProps) => {
@@ -18,6 +19,7 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
+    toast.success('Mail generated.');
   };
 
   const updateFormField = <K extends keyof EmailFormData>(
