@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface EmailFormData {
   type: "mail" | "reminder";
   title?: string;
@@ -19,6 +21,7 @@ export interface DeploymentMailFieldsProps {
   onFeaturesChange: (value: string) => void;
 }
 export interface EmailPreviewProps {
+  setEmailData: Dispatch<SetStateAction<EmailFormData | null>>;
   emailData: {
     type: "mail" | "reminder" | "tasks";
     title?: string;

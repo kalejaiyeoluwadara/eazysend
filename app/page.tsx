@@ -73,7 +73,7 @@ export default function Home() {
             </div>
 
             <div className="overflow-hidden">
-              {emailData && <EmailPreview emailData={emailData} />}
+              {emailData && <EmailPreview setEmailData={setEmailData} emailData={emailData} />}
             </div>
           </div>
         </TabsContent>
