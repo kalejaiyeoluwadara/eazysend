@@ -1,10 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { EmailForm } from "./components/EmailsForm";
 import { EmailPreview } from "./components/EmailPreview";
-import Image from "next/image";
-import outlook from "@/public/outlook.svg";
-import Link from "next/link";
 import { EmailFormData } from "./models/IEmail";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ListTodo, Mail } from "lucide-react";
@@ -12,7 +9,10 @@ import { TaskForm } from "./components/TaskForm";
 import { SavedTasksList } from "./components/SavedTaskList";
 import { TaskListPreview } from "./components/TaskList";
 import { TaskListData } from "./models/Task";
-import { Toaster, toast } from 'sonner';
+import { Toaster } from 'sonner';
+import UserAvatar from "./components/UserAvatar";
+import Logo from "./components/Logo";
+
 export default function Home() {
   const [emailData, setEmailData] = useState<EmailFormData | null>(null);
   const [taskData, setTaskData] = useState<TaskListData | null>(null);
@@ -45,11 +45,9 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex flex-col px-12 py-8 bg-white">
       <Toaster />
-      <div className="w-full flex items-start mb-4 gap-3">
-        <Link href={"https://outlook.office365.com/mail/"}>
-          <Image alt="outlook" className="h-8 w-8" src={outlook} />
-        </Link>
-        <h1 className="text-2xl font-bold mb-8">EazySend</h1>
+      <div className="w-full flex items-start justify-between mb-4 ">
+        <Logo />
+        <UserAvatar />
       </div>
 
       <Tabs

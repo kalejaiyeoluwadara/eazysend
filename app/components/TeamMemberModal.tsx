@@ -1,4 +1,3 @@
-// TeamMemberModal.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -53,7 +52,7 @@ export const TeamMemberModal = ({ onSave }: TeamMemberModalProps) => {
                             id="team-member-name"
                             value={teamMember}
                             onChange={(e) => setTeamMember(e.target.value)}
-                            placeholder="e.g., Dara"
+                            placeholder="e.g., Wale"
                             autoFocus
                         />
                     </div>
