@@ -8,9 +8,10 @@ import Link from "next/link";
 import { EmailFormData } from "./models/IEmail";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ListTodo, Mail } from "lucide-react";
-import { TaskForm, TaskListData } from "./components/TaskForm";
+import { TaskForm } from "./components/TaskForm";
 import { SavedTasksList } from "./components/SavedTaskList";
 import { TaskListPreview } from "./components/TaskList";
+import { TaskListData } from "./models/Task";
 
 export default function Home() {
   const [emailData, setEmailData] = useState<EmailFormData | null>(null);

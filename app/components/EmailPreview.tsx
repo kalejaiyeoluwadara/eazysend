@@ -3,15 +3,7 @@
 import { FiCopy } from "react-icons/fi";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-
-interface EmailPreviewProps {
-  emailData: {
-    type: "mail" | "reminder" | "tasks";
-    title?: string;
-    features?: string;
-    deploymentName?: string;
-  };
-}
+import { EmailPreviewProps } from "../models/IEmail";
 
 export const EmailPreview = ({ emailData }: EmailPreviewProps) => {
   const [copied, setCopied] = useState(false);

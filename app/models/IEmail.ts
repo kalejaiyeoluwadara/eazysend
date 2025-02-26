@@ -19,3 +19,11 @@ export interface DeploymentMailFieldsProps {
   onTitleChange: (value: string) => void;
   onFeaturesChange: (value: string) => void;
 }
+export interface EmailPreviewProps {
+  emailData: {
+    type: "mail" | "reminder" | "tasks";
+    title?: string;
+    features?: string;
+    deploymentName?: string;
+  };
+}

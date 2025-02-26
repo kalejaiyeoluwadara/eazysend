@@ -1,13 +1,18 @@
-// TaskListPreview.tsx
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { TaskListData } from "./TaskForm";
+import { Button } from "@/components/ui/button";
+import { Copy, Check } from "lucide-react";
+import { TaskListData } from "../models/Task";
 
 interface TaskListPreviewProps {
     taskData: TaskListData;
 }
+
 export const TaskListPreview = ({ taskData }: TaskListPreviewProps) => {
+    const [copied, setCopied] = useState(false);
+
     // Format date for display
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -19,8 +24,50 @@ export const TaskListPreview = ({ taskData }: TaskListPreviewProps) => {
         return `${day}${suffix} ${month}, ${year}`;
     };
 
+    // Create formatted text for clipboard
+    const getFormattedText = () => {
+        return `Date: ${formatDate(taskData.date)}
+Team Member: ${taskData.teamMember}
+${taskData.tasks}`;
+    };
+
+    // Handle copy to clipboard
+    const handleCopy = async () => {
+        const text = getFormattedText();
+
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+
+            // Reset copied state after 2 seconds
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    };
+
     return (
-        <Card className="w-full">
+        <Card className="w-full relative">
+            <Button
+                onClick={handleCopy}
+                variant="outline"
+                size="sm"
+                className="absolute top-4 right-4 bg-white"
+            >
+                {copied ? (
+                    <>
+                        <Check className="h-4 w-4 mr-1" />
+                    </>
+                ) : (
+                    <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        <span>Copy</span>
+                    </>
+                )}
+            </Button>
+
             <CardContent className="p-6">
                 <div className="prose max-w-none">
                     <div className="mb-4">

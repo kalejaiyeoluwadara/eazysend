@@ -1,22 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { TeamMemberModal } from "./TeamMemberModal";
+import { User, Edit2 } from "lucide-react";
+import { TaskFormProps, TaskListData } from "../models/Task";
 
-export interface TaskListData {
-    date: string;
-    teamMember: string;
-    tasks: string;
-    id?: string;
 
-}
-
-interface TaskFormProps {
-    onSubmit: (data: TaskListData) => void;
-}
 
 export const TaskForm = ({ onSubmit }: TaskFormProps) => {
     const [formData, setFormData] = useState<TaskListData>({
@@ -24,6 +17,15 @@ export const TaskForm = ({ onSubmit }: TaskFormProps) => {
         teamMember: "",
         tasks: "",
     });
+    const [showModal, setShowModal] = useState(false);
+
+    // Effect to load team member name from localStorage on initial load
+    useEffect(() => {
+        const savedTeamMember = localStorage.getItem("teamMemberName");
+        if (savedTeamMember) {
+            setFormData(prev => ({ ...prev, teamMember: savedTeamMember }));
+        }
+    }, []);
 
     const handleTasksChange = (value: string) => {
         const formattedTasks = formatTasksList(value);
@@ -80,61 +82,92 @@ export const TaskForm = ({ onSubmit }: TaskFormProps) => {
         return `${day}${suffix} ${month}, ${year}`;
     };
 
+    const handleTeamMemberSave = (name: string) => {
+        setFormData(prev => ({ ...prev, teamMember: name }));
+    };
+
+    const openChangeTeamMemberModal = () => {
+        setShowModal(true);
+    };
+
     return (
-        <motion.form layout onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex gap-2 items-center ">
-                <p className="text-base ">
-                    {formatDate(formData.date)}
-                </p>
-                <div>
-                    <Input
-                        type="date"
-                        value={formData.date}
-                        onChange={(e) => {
-                            setFormData({ ...formData, date: e.target.value });
-                        }}
-                        required
-                    />
+        <>
+            <motion.form layout onSubmit={handleSubmit} className="space-y-6">
+                <div className="flex gap-2 items-center">
+                    <p className="text-base">
+                        {formatDate(formData.date)}
+                    </p>
+                    <div>
+                        <Input
+                            type="date"
+                            value={formData.date}
+                            onChange={(e) => {
+                                setFormData({ ...formData, date: e.target.value });
+                            }}
+                            required
+                        />
+                    </div>
                 </div>
 
-            </div>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <Label className="text-sm font-medium flex items-center gap-1">
+                            <User size={16} />
+                            <span>Team Member</span>
+                        </Label>
+                        <Button
+                            variant="ghost"
+                            type="button"
+                            onClick={openChangeTeamMemberModal}
+                            size="sm"
+                            className="h-6 px-2 text-xs"
+                        >
+                            <Edit2 size={12} className="mr-1" />
+                            Change
+                        </Button>
+                    </div>
+                    <div className="p-2 border rounded-md bg-gray-50">
+                        <p className="text-sm">{formData.teamMember || "Not set"}</p>
+                    </div>
+                </div>
 
-            <div className="space-y-2">
-                <Label className="text-sm font-medium">Team Member</Label>
-                <Input
-                    value={formData.teamMember}
-                    onChange={(e) => setFormData({ ...formData, teamMember: e.target.value })}
-                    placeholder="e.g., Dara"
-                    required
+                <div className="space-y-2 relative">
+                    <Label className="text-sm font-medium">Tasks Completed</Label>
+                    <Textarea
+                        value={formData.tasks}
+                        onChange={(e) => handleTasksChange(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Press Enter to add a new numbered task"
+                        required
+                        rows={4}
+                    />
+
+                    {formData.tasks && formData.tasks.trim() !== "" && (
+                        <Button
+                            variant={"ghost"}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, tasks: "" })}
+                            className="text-sm absolute -top-3 right-2 text-red-500 hover:text-red-700 transition"
+                        >
+                            Clear
+                        </Button>
+                    )}
+                </div>
+
+                <Button type="submit" className="w-full">
+                    Generate Task List
+                </Button>
+            </motion.form>
+
+            {/* Team Member Modal */}
+            {showModal && (
+                <TeamMemberModal
+                    onSave={(name) => {
+                        handleTeamMemberSave(name);
+                        setShowModal(false);
+                    }}
                 />
-            </div>
-
-            <div className="space-y-2 relative">
-                <Label className="text-sm font-medium">Tasks Completed</Label>
-                <Textarea
-                    value={formData.tasks}
-                    onChange={(e) => handleTasksChange(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Press Enter to add a new numbered task"
-                    required
-                    rows={4}
-                />
-
-                {formData.tasks && formData.tasks.trim() !== "" && (
-                    <Button
-                        variant={"ghost"}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, tasks: "" })}
-                        className="text-sm absolute -top-3 right-2 text-red-500 hover:text-red-700 transition"
-                    >
-                        Clear
-                    </Button>
-                )}
-            </div>
-
-            <Button type="submit" className="w-full">
-                Generate Task List
-            </Button>
-        </motion.form>
+            )}
+        </>
     );
 };
