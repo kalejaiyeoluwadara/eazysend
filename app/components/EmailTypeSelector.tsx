@@ -1,13 +1,9 @@
 import { Label } from "@/components/ui/label";
-import { RadioGroup } from "@/components/ui/radio-group";
-import { RadioGroupItem } from "@radix-ui/react-radio-group";
 import { EmailTypeSelectorProps } from "../models/IEmail";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // Email Type Selector Component
-export const EmailTypeSelector = ({
-  type,
-  onChange,
-}: EmailTypeSelectorProps) => {
+export const EmailTypeSelector = ({ type, onChange, }: EmailTypeSelectorProps) => {
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">Email Type</Label>
