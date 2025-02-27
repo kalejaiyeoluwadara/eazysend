@@ -10,6 +10,7 @@ import { User, Edit2, CheckCircle } from "lucide-react";
 
 import { TaskFormProps, TaskListData } from "../models/Task";
 import { toast } from "sonner";
+import { formatFeatures } from "./formatFeatures";
 
 
 
@@ -30,7 +31,7 @@ export const TaskForm = ({ onSubmit }: TaskFormProps) => {
     }, []);
 
     const handleTasksChange = (value: string) => {
-        const formattedTasks = formatTasksList(value);
+        const formattedTasks = formatFeatures(value);
         setFormData({ ...formData, tasks: formattedTasks });
     };
 
@@ -38,12 +39,14 @@ export const TaskForm = ({ onSubmit }: TaskFormProps) => {
         return text
             .split("\n")
             .map((line, index) => {
-                // Remove existing numbers and dots if present
-                const cleanLine = line.replace(/^\d+\.\s*/, "").trim();
                 // Skip empty lines
-                if (!cleanLine) return "";
-                // Add number formatting
-                return `${index + 1}.${cleanLine}`;
+                if (!line.trim()) return "";
+
+                // If line already has numbering, remove it first
+                const cleanLine = line.trim();
+
+                // Add number formatting with a space
+                return `${index + 1}. ${cleanLine}`;
             })
             .filter(line => line) // Remove empty lines
             .join("\n");
@@ -52,12 +55,9 @@ export const TaskForm = ({ onSubmit }: TaskFormProps) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            const lines = formData.tasks.split("\n");
-            const currentLineIndex = lines.length;
-            const newLine = `${currentLineIndex + 1}.`;
             setFormData({
                 ...formData,
-                tasks: formData.tasks ? formData.tasks + "\n" + newLine : newLine
+                tasks: formData.tasks ? formData.tasks + "\n" : "" + "• "
             });
         }
     };
