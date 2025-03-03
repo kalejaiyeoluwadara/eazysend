@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import CopyButton from "./CopyButton";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EmailCopyComponent from "./EmailCopyComponent ";
 
 // LocalStorage key for deployment info
 const DEPLOYMENT_INFO_KEY = "lastDeploymentInfo";
@@ -123,30 +124,33 @@ This is a gentle reminder to deploy the pending changes. Thank you for your swif
   const showReminderButton = isDeploymentEmail || !!lastDeploymentInfo;
 
   return (
-    <div className="relative group bg-gray-100 p-4 rounded-lg border">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Email Preview</h2>
-        <div className="flex gap-2">
-          <CopyButton copied={copied} handleCopy={handleCopy} />
+    <main className="flex flex-col gap-2">
+      <EmailCopyComponent />
+      <div className="relative group bg-gray-100 p-4 rounded-lg border">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Email Preview</h2>
+          <div className="flex gap-2">
+            <CopyButton copied={copied} handleCopy={handleCopy} />
+          </div>
+        </div>
+        <pre className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md bg-white">
+          {generateEmailContent()}
+        </pre>
+
+        <div className="absolute transition-all right-3 -bottom-4 ">
+          {showReminderButton && (
+            <Button
+              variant={isReminderMode ? "default" : "outline"}
+              size="sm"
+              onClick={toggleReminderMode}
+              className="flex group-hover:visible invisible rounded-full items-center gap-1"
+            >
+              <Bell className="h-4 w-4" />
+              {isReminderMode ? "Original" : "Generate Reminder"}
+            </Button>
+          )}
         </div>
       </div>
-      <pre className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md bg-white">
-        {generateEmailContent()}
-      </pre>
-
-      <div className="absolute transition-all right-3 -bottom-4 ">
-        {showReminderButton && (
-          <Button
-            variant={isReminderMode ? "default" : "outline"}
-            size="sm"
-            onClick={toggleReminderMode}
-            className="flex group-hover:visible invisible rounded-full items-center gap-1"
-          >
-            <Bell className="h-4 w-4" />
-            {isReminderMode ? "Original" : "Generate Reminder"}
-          </Button>
-        )}
-      </div>
-    </div>
+    </main>
   );
 };

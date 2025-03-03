@@ -10,7 +10,7 @@ function CopyButton({ copied, handleCopy }: CopyButtonProps) {
             onClick={handleCopy}
             variant="outline"
             size="sm"
-            className="absolute top-4 right-4 bg-white"
+            className="absolute top-2 right-4 bg-white"
         >
             {copied ? (
                 <>
