@@ -30,7 +30,7 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
   };
 
   return (
-    <motion.form layout onSubmit={handleSubmit} className="space-y-6">
+    <motion.form layout onSubmit={handleSubmit} className="space-y-6 ">
       <EmailTypeSelector
         type={formData.type}
         onChange={(value) => updateFormField("type", value)}

@@ -67,8 +67,8 @@ export default function Home() {
         </TabsList>
 
         <TabsContent value="email">
-          <div className="grid sm:grid-cols-2 gap-8">
-            <div className="bg-white w-full p-6 rounded-lg shadow-sm border">
+          <div className="grid sm:grid-cols-2 gap-8 h-screen ">
+            <div className="bg-white h-fit w-full p-6 rounded-lg shadow-sm border">
               <EmailForm onSubmit={handleEmailSubmit} />
             </div>
 

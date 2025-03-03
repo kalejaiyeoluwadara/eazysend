@@ -137,7 +137,7 @@ This is a gentle reminder to deploy the pending changes. Thank you for your swif
           {generateEmailContent()}
         </pre>
 
-        <div className="absolute transition-all right-3 -bottom-4 ">
+        <div className="absolute z-50 transition-all right-3 -bottom-4 ">
           {showReminderButton && (
             <Button
               variant={isReminderMode ? "default" : "outline"}
