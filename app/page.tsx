@@ -43,23 +43,7 @@ export default function Home() {
     setTaskData(task);
   };
 
-  // Load last deployment info on component mount
-  const loadLastDeploymentInfo = () => {
-    try {
-      const savedInfo = localStorage.getItem(DEPLOYMENT_INFO_KEY);
-      if (savedInfo) {
-        const parsedInfo = JSON.parse(savedInfo);
-        setLastDeploymentInfo(parsedInfo);
-        setEmailData(parsedInfo)
-        console.log(parsedInfo)
-      }
-    } catch (error) {
-      console.error("Error loading deployment info from localStorage:", error);
-    }
-  };
-  useEffect(() => {
-    loadLastDeploymentInfo();
-  }, []);
+
 
   return (
     <main className="min-h-screen w-full flex flex-col px-12 py-8 bg-white">

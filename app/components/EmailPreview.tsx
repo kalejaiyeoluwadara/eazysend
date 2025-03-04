@@ -12,14 +12,23 @@ import { StoredDeploymentInfo } from "../models/Task";
 // LocalStorage key for deployment info
 const DEPLOYMENT_INFO_KEY = "lastDeploymentInfo";
 
-
-
 export const EmailPreview = ({ emailData, setEmailData }: EmailPreviewProps) => {
   const [copied, setCopied] = useState(false);
   const [isReminderMode, setIsReminderMode] = useState(false);
   const [lastDeploymentInfo, setLastDeploymentInfo] = useState<StoredDeploymentInfo | null>(null);
 
-
+  // Load last deployment info from localStorage on component mount
+  useEffect(() => {
+    const storedDeploymentInfo = localStorage.getItem(DEPLOYMENT_INFO_KEY);
+    if (storedDeploymentInfo) {
+      try {
+        const parsedInfo: StoredDeploymentInfo = JSON.parse(storedDeploymentInfo);
+        setLastDeploymentInfo(parsedInfo);
+      } catch (error) {
+        console.error("Error parsing stored deployment info:", error);
+      }
+    }
+  }, []);
 
   // Save deployment info to localStorage when a new deployment email is created
   useEffect(() => {
@@ -44,7 +53,7 @@ export const EmailPreview = ({ emailData, setEmailData }: EmailPreviewProps) => 
         console.error("Error saving deployment info to localStorage:", error);
       }
     }
-  }, []);
+  }, [emailData]);
 
   const generateEmailContent = () => {
     if (isReminderMode) {
