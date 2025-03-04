@@ -17,3 +17,10 @@ export interface TaskListData {
 export interface TaskListPreviewProps {
   taskData: TaskListData;
 }
+// Interface for stored deployment information
+export interface StoredDeploymentInfo {
+  type: string;
+  deploymentName: string;
+  title: string;
+  features: string;
+}

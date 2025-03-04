@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmailForm } from "./components/EmailsForm";
 import { EmailPreview } from "./components/EmailPreview";
 import { EmailFormData } from "./models/IEmail";
@@ -8,7 +8,7 @@ import { ListTodo, Mail } from "lucide-react";
 import { TaskForm } from "./components/TaskForm";
 import { SavedTasksList } from "./components/SavedTaskList";
 import { TaskListPreview } from "./components/TaskList";
-import { TaskListData } from "./models/Task";
+import { StoredDeploymentInfo, TaskListData } from "./models/Task";
 import { Toaster } from 'sonner';
 import UserAvatar from "./components/UserAvatar";
 import Logo from "./components/Logo";
@@ -17,7 +17,8 @@ export default function Home() {
   const [emailData, setEmailData] = useState<EmailFormData | null>(null);
   const [taskData, setTaskData] = useState<TaskListData | null>(null);
   const [activity, setActivity] = useState<'email' | 'tasklist'>('email');
-
+  const [lastDeploymentInfo, setLastDeploymentInfo] = useState<StoredDeploymentInfo | null>(null);
+  const DEPLOYMENT_INFO_KEY = "lastDeploymentInfo";
   const handleEmailSubmit = (data: EmailFormData) => {
     setEmailData(data);
   };
@@ -41,6 +42,24 @@ export default function Home() {
   const handleTaskSelect = (task: TaskListData) => {
     setTaskData(task);
   };
+
+  // Load last deployment info on component mount
+  const loadLastDeploymentInfo = () => {
+    try {
+      const savedInfo = localStorage.getItem(DEPLOYMENT_INFO_KEY);
+      if (savedInfo) {
+        const parsedInfo = JSON.parse(savedInfo);
+        setLastDeploymentInfo(parsedInfo);
+        setEmailData(parsedInfo)
+        console.log(parsedInfo)
+      }
+    } catch (error) {
+      console.error("Error loading deployment info from localStorage:", error);
+    }
+  };
+  useEffect(() => {
+    loadLastDeploymentInfo();
+  }, []);
 
   return (
     <main className="min-h-screen w-full flex flex-col px-12 py-8 bg-white">

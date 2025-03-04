@@ -7,41 +7,19 @@ import CopyButton from "./CopyButton";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailCopyComponent from "./EmailCopyComponent ";
+import { StoredDeploymentInfo } from "../models/Task";
 
 // LocalStorage key for deployment info
 const DEPLOYMENT_INFO_KEY = "lastDeploymentInfo";
 
-// Interface for stored deployment information
-interface StoredDeploymentInfo {
-  type: string;
-  deploymentName: string;
-  title: string;
-  features: string;
-}
+
 
 export const EmailPreview = ({ emailData, setEmailData }: EmailPreviewProps) => {
   const [copied, setCopied] = useState(false);
   const [isReminderMode, setIsReminderMode] = useState(false);
   const [lastDeploymentInfo, setLastDeploymentInfo] = useState<StoredDeploymentInfo | null>(null);
 
-  // Load last deployment info on component mount
-  useEffect(() => {
-    const loadLastDeploymentInfo = () => {
-      try {
-        const savedInfo = localStorage.getItem(DEPLOYMENT_INFO_KEY);
-        if (savedInfo) {
-          const parsedInfo = JSON.parse(savedInfo);
-          setLastDeploymentInfo(parsedInfo);
-          setEmailData(parsedInfo)
-          console.log(parsedInfo)
-        }
-      } catch (error) {
-        console.error("Error loading deployment info from localStorage:", error);
-      }
-    };
 
-    loadLastDeploymentInfo();
-  }, []);
 
   // Save deployment info to localStorage when a new deployment email is created
   useEffect(() => {
