@@ -19,7 +19,7 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
-    toast.success('Mail generated.');
+    toast.success("Mail generated.");
   };
 
   const updateFormField = <K extends keyof EmailFormData>(
@@ -44,8 +44,17 @@ export const EmailForm = ({ onSubmit }: EmailFormProps) => {
         {formData.type === "mail" ? (
           <DeploymentMailFields
             title={formData.title}
+            projectName={formData.projectName}
+            environment={formData.environment}
             features={formData.features}
             onTitleChange={(value) => updateFormField("title", value)}
+            onProjectNameChange={(value) => {
+              updateFormField("projectName", value);
+              updateFormField("deploymentName", value);
+            }}
+            onEnvironmentChange={(value) =>
+              updateFormField("environment", value)
+            }
             onFeaturesChange={(value) => updateFormField("features", value)}
           />
         ) : (

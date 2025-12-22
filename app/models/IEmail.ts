@@ -3,6 +3,8 @@ import { Dispatch, SetStateAction } from "react";
 export interface EmailFormData {
   type: "mail" | "reminder";
   title?: string;
+  projectName?: string;
+  environment?: "TEST" | "STAGING" | "LIVE";
   features?: string;
   deploymentName?: string;
 }
@@ -16,8 +18,12 @@ export interface EmailTypeSelectorProps {
 }
 export interface DeploymentMailFieldsProps {
   title?: string;
+  projectName?: string;
+  environment?: "TEST" | "STAGING" | "LIVE";
   features?: string;
   onTitleChange: (value: string) => void;
+  onProjectNameChange: (value: string) => void;
+  onEnvironmentChange: (value: "TEST" | "STAGING" | "LIVE") => void;
   onFeaturesChange: (value: string) => void;
 }
 export interface EmailPreviewProps {

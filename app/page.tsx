@@ -9,15 +9,16 @@ import { TaskForm } from "./components/TaskForm";
 import { SavedTasksList } from "./components/SavedTaskList";
 import { TaskListPreview } from "./components/TaskList";
 import { StoredDeploymentInfo, TaskListData } from "./models/Task";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 import UserAvatar from "./components/UserAvatar";
 import Logo from "./components/Logo";
 
 export default function Home() {
   const [emailData, setEmailData] = useState<EmailFormData | null>(null);
   const [taskData, setTaskData] = useState<TaskListData | null>(null);
-  const [activity, setActivity] = useState<'email' | 'tasklist'>('email');
-  const [lastDeploymentInfo, setLastDeploymentInfo] = useState<StoredDeploymentInfo | null>(null);
+  const [activity, setActivity] = useState<"email" | "tasklist">("email");
+  const [lastDeploymentInfo, setLastDeploymentInfo] =
+    useState<StoredDeploymentInfo | null>(null);
   const DEPLOYMENT_INFO_KEY = "lastDeploymentInfo";
   const handleEmailSubmit = (data: EmailFormData) => {
     setEmailData(data);
@@ -43,8 +44,6 @@ export default function Home() {
     setTaskData(task);
   };
 
-
-
   return (
     <main className="min-h-screen w-full flex flex-col px-12 py-8 bg-white">
       <Toaster />
@@ -55,7 +54,7 @@ export default function Home() {
 
       <Tabs
         defaultValue="email"
-        onValueChange={(value) => setActivity(value as 'email' | 'tasklist')}
+        onValueChange={(value) => setActivity(value as "email" | "tasklist")}
         className="w-full"
       >
         <TabsList className="mb-6">
@@ -76,7 +75,12 @@ export default function Home() {
             </div>
 
             <div className="overflow-hidden">
-              {emailData && <EmailPreview setEmailData={setEmailData} emailData={emailData} />}
+              {emailData && (
+                <EmailPreview
+                  setEmailData={setEmailData}
+                  emailData={emailData}
+                />
+              )}
             </div>
           </div>
         </TabsContent>
