@@ -8,7 +8,6 @@ import { DeploymentMailFieldsProps } from "../models/IEmail";
 import { formatFeatures } from "./formatFeatures";
 import { TitleBuilder } from "./TitleBuilder";
 import { Sparkles } from "@/components/icons";
-import { useCompletion } from "@ai-sdk/react";
 import { toast } from "sonner";
 
 // Deployment Mail Form Fields
@@ -24,21 +23,6 @@ export const DeploymentMailFields = ({
 }: DeploymentMailFieldsProps) => {
   const [isRefining, setIsRefining] = useState(false);
 
-  const { complete, completion, isLoading } = useCompletion({
-    api: "/api/refine-features",
-    onFinish: (_prompt: string, completion: string) => {
-      const refinedText = formatFeatures(completion);
-      onFeaturesChange(refinedText);
-      setIsRefining(false);
-      toast.success("Features refined successfully!");
-    },
-    onError: (error: Error) => {
-      setIsRefining(false);
-      toast.error("Failed to refine features. Please try again.");
-      console.error("Error refining features:", error);
-    },
-  });
-
   const handleRefineFeatures = async () => {
     if (!features || features.trim() === "") {
       toast.error("Please enter features to refine");
@@ -47,10 +31,27 @@ export const DeploymentMailFields = ({
 
     setIsRefining(true);
     try {
-      await complete(features);
+      const response = await fetch("/api/refine-features", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: features }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to refine features");
+      }
+
+      const data = await response.json();
+      const refinedText = formatFeatures(data.completion);
+      onFeaturesChange(refinedText);
+      toast.success("Features refined successfully!");
     } catch (error) {
-      setIsRefining(false);
+      console.error("Error refining features:", error);
       toast.error("Failed to refine features. Please try again.");
+    } finally {
+      setIsRefining(false);
     }
   };
 
@@ -60,10 +61,6 @@ export const DeploymentMailFields = ({
       onFeaturesChange((features ? features + "\n" : "") + "• ");
     }
   };
-
-  // Use refined completion while it's being generated
-  const displayText =
-    isRefining && completion ? formatFeatures(completion) : features || "";
 
   return (
     <>
@@ -86,16 +83,16 @@ export const DeploymentMailFields = ({
               variant={"outline"}
               type="button"
               onClick={handleRefineFeatures}
-              disabled={isLoading || isRefining}
+              disabled={isRefining}
               className="text-sm h-8 px-3 gap-2"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              {isLoading || isRefining ? "Refining..." : "Refine with AI"}
+              {isRefining ? "Refining..." : "Refine with AI"}
             </Button>
           )}
         </div>
         <Textarea
-          value={displayText}
+          value={features || ""}
           onChange={(e) => {
             if (!isRefining) {
               onFeaturesChange(formatFeatures(e.target.value));
