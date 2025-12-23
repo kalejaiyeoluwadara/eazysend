@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import * as React from "react";
 import { Label } from "@/components/ui/label";
 import { Combobox } from "@/components/ui/combobox";
@@ -35,29 +35,14 @@ export const TitleBuilder = ({
   const [projects, setProjects] = useState<string[]>([]);
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
-  const lastComputedTitleRef = useRef<string>("");
 
+  // Load projects from localStorage on mount
   useEffect(() => {
     const savedProjects = localStorage.getItem("predefinedProjects");
     if (savedProjects) {
       setProjects(JSON.parse(savedProjects));
     }
   }, []);
-
-  const saveProjects = (updatedProjects: string[]) => {
-    setProjects(updatedProjects);
-    localStorage.setItem("predefinedProjects", JSON.stringify(updatedProjects));
-  };
-
-  const handleAddProject = (projectName: string) => {
-    if (projectName.trim() && !projects.includes(projectName.trim())) {
-      const updated = [...projects, projectName.trim()];
-      saveProjects(updated);
-      onProjectNameChange(projectName.trim());
-      setNewProjectName("");
-      setIsAddingProject(false);
-    }
-  };
 
   // Helper function to compute title
   const computeTitle = (
@@ -75,51 +60,48 @@ export const TitleBuilder = ({
     }
   };
 
-  const handleProjectSelect = (selectedProject: string) => {
-    onProjectNameChange(selectedProject);
-    // Update title immediately with the new project name
-    const newTitle = computeTitle(selectedProject, environment);
-    if (newTitle !== lastComputedTitleRef.current) {
-      lastComputedTitleRef.current = newTitle;
-      onTitleChange(newTitle);
+  const saveProjects = (updatedProjects: string[]) => {
+    setProjects(updatedProjects);
+    localStorage.setItem("predefinedProjects", JSON.stringify(updatedProjects));
+  };
+
+  const updateTitleAndProject = (newProjectName: string) => {
+    const newTitle = computeTitle(newProjectName, environment);
+    onProjectNameChange(newProjectName);
+    onTitleChange(newTitle);
+  };
+
+  const updateTitleAndEnvironment = (newEnv: "TEST" | "STAGING" | "LIVE") => {
+    const newTitle = computeTitle(projectName, newEnv);
+    onEnvironmentChange(newEnv);
+    onTitleChange(newTitle);
+  };
+
+  const handleAddProject = (projectName: string) => {
+    if (projectName.trim() && !projects.includes(projectName.trim())) {
+      const updated = [...projects, projectName.trim()];
+      saveProjects(updated);
+      updateTitleAndProject(projectName.trim());
+      setNewProjectName("");
+      setIsAddingProject(false);
     }
+  };
+
+  const handleProjectSelect = (selectedProject: string) => {
+    updateTitleAndProject(selectedProject);
   };
 
   const handleEnvironmentSelect = (
     selectedEnv: "TEST" | "STAGING" | "LIVE"
   ) => {
-    onEnvironmentChange(selectedEnv);
-    // Update title immediately with the new environment
-    const newTitle = computeTitle(projectName, selectedEnv);
-    if (newTitle !== lastComputedTitleRef.current) {
-      lastComputedTitleRef.current = newTitle;
-      onTitleChange(newTitle);
-    }
+    updateTitleAndEnvironment(selectedEnv);
   };
-
-  // Update title when projectName or environment changes externally (e.g., from parent)
-  useEffect(() => {
-    const newTitle = computeTitle(projectName, environment);
-
-    // Only update if the title actually changed to prevent infinite loops
-    if (newTitle !== lastComputedTitleRef.current) {
-      lastComputedTitleRef.current = newTitle;
-      onTitleChange(newTitle);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectName, environment]); // Only depend on projectName and environment
 
   const removeProject = (proj: string) => {
     const updated = projects.filter((p) => p !== proj);
     saveProjects(updated);
     if (projectName === proj) {
-      onProjectNameChange("");
-      // Update title immediately when project is removed
-      const newTitle = computeTitle(undefined, environment);
-      if (newTitle !== lastComputedTitleRef.current) {
-        lastComputedTitleRef.current = newTitle;
-        onTitleChange(newTitle);
-      }
+      updateTitleAndProject("");
     }
   };
 

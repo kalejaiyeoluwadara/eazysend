@@ -8,6 +8,7 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailCopyComponent from "./EmailCopyComponent ";
 import { StoredDeploymentInfo } from "../models/Task";
+import ReactMarkdown from "react-markdown";
 
 // LocalStorage key for deployment info
 const DEPLOYMENT_INFO_KEY = "lastDeploymentInfo";
@@ -61,30 +62,44 @@ export const EmailPreview = ({ emailData, setEmailData }: EmailPreviewProps) => 
         lastDeploymentInfo?.deploymentName ||
         "the pending changes";
 
-      return `Hi Team,
+      return {
+        text: `Hi Team,
 
-This is a gentle reminder to deploy ${deploymentName}. Thank you for your swift response.`;
+This is a gentle reminder to deploy ${deploymentName}. Thank you for your swift response.`,
+        hasMarkdown: false
+      };
     } else if (emailData.type === "mail") {
-      return `${emailData.title}
-
-Hi Team,
-I hope this message finds you well. We are excited to inform you that a set of new fixes are ready for deployment. Please find below the list of fixes:
-
-${emailData.features}
-
-Please begin the deployment process to the specified environments as soon as possible. The testing team has been copied on this email and will initiate testing once the deployment is completed.
-Thank you for your swift action, and let's ensure a smooth deployment.
-`;
+      return {
+        title: emailData.title,
+        text: `Hi Team,
+I hope this message finds you well. We are excited to inform you that a set of new fixes are ready for deployment. Please find below the list of fixes:`,
+        features: emailData.features,
+        footer: `Please begin the deployment process to the specified environments as soon as possible. The testing team has been copied on this email and will initiate testing once the deployment is completed.
+Thank you for your swift action, and let's ensure a smooth deployment.`,
+        hasMarkdown: true
+      };
     } else {
-      return `Hi Team,
+      return {
+        text: `Hi Team,
 
-This is a gentle reminder to deploy the pending changes. Thank you for your swift response.`;
+This is a gentle reminder to deploy the pending changes. Thank you for your swift response.`,
+        hasMarkdown: false
+      };
     }
   };
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(generateEmailContent());
+      const content = generateEmailContent();
+      let textToCopy = "";
+      
+      if (content.hasMarkdown && 'title' in content) {
+        textToCopy = `${content.title}\n\n${content.text}\n\n${content.features}\n\n${content.footer}`;
+      } else {
+        textToCopy = content.text;
+      }
+      
+      await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
       toast.success("Copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
@@ -120,9 +135,35 @@ This is a gentle reminder to deploy the pending changes. Thank you for your swif
             <CopyButton copied={copied} handleCopy={handleCopy} />
           </div>
         </div>
-        <pre className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md bg-white">
-          {generateEmailContent()}
-        </pre>
+        <div className="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded-md bg-white">
+          {(() => {
+            const content = generateEmailContent();
+            if (content.hasMarkdown && 'title' in content) {
+              return (
+                <>
+                  <div className="font-semibold mb-3">{content.title}</div>
+                  <div className="whitespace-pre-wrap mb-3">{content.text}</div>
+                  <div className="my-4 markdown-content">
+                    <ReactMarkdown
+                      components={{
+                        h3: ({ node, ...props }) => <h3 className="font-bold text-base mt-3 mb-2" {...props} />,
+                        ul: ({ node, ...props }) => <ul className="list-disc ml-5 space-y-1" {...props} />,
+                        li: ({ node, ...props }) => <li className="text-sm" {...props} />,
+                        strong: ({ node, ...props }) => <strong className="font-semibold text-gray-900" {...props} />,
+                        p: ({ node, ...props }) => <p className="mb-2" {...props} />,
+                      }}
+                    >
+                      {content.features || ''}
+                    </ReactMarkdown>
+                  </div>
+                  <div className="whitespace-pre-wrap mt-3">{content.footer}</div>
+                </>
+              );
+            } else {
+              return <pre className="whitespace-pre-wrap">{content.text}</pre>;
+            }
+          })()}
+        </div>
 
         <div className="absolute z-50 transition-all right-3 -bottom-4 ">
           {showReminderButton && (

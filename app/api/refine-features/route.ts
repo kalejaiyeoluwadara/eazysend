@@ -19,19 +19,22 @@ export async function POST(req: Request) {
 
     const { text } = await generateText({
       model: google("gemini-2.5-flash"),
-      prompt: `You are a professional email writing assistant. Refine the following deployment features list to make it more professional, clear, and well-structured. 
+      prompt: `You are a professional email writing assistant. Convert the following technical features list into clear, simple language that non-technical people can easily understand. 
       
-The features list should:
-- Be concise and professional
-- Use proper bullet point formatting (each feature on a new line with a bullet)
-- Be clear and specific about what was fixed or updated
-- Maintain the original meaning and technical details
-- Be appropriate for a deployment email to a technical team
+The features list should be formatted in proper Markdown with:
+- Use simple, everyday language (avoid technical jargon and acronyms)
+- Focus on benefits and what users will experience, not technical implementation
+- Group related features under **bold category headings** (e.g., **Performance Improvements**, **New Features**, **Bug Fixes**)
+- Use proper markdown bullet points (- for unordered lists)
+- Use **bold** text to emphasize key improvements or features
+- Be clear, concise, and well-structured
+- Explain "what improved" rather than "how it was fixed"
+- Be appropriate for an email to clients, stakeholders, or end users
 
-Original features list:
+Original technical features:
 ${prompt}
 
-Refined features list (return only the refined text, no explanations or additional text):`,
+Refined markdown features list (return only the markdown-formatted text, no explanations):`,
     });
 
     return new Response(JSON.stringify({ completion: text }), {
