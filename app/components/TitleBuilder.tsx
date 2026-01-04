@@ -52,7 +52,7 @@ export const TitleBuilder = ({
     if (projName && env) {
       return `Request to Deploy ${projName} to ${env}`;
     } else if (projName) {
-      return `Request to Deploy ${projName} to`;
+      return `Request to Deploy ${projName} to TEST`;
     } else if (env) {
       return `Request to Deploy to ${env}`;
     } else {

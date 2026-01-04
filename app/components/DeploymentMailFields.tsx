@@ -111,7 +111,7 @@ export const DeploymentMailFields = ({
             variant={"ghost"}
             type="button"
             onClick={() => onFeaturesChange("")}
-            className="text-sm absolute -top-3 right-2 text-red-500 hover:text-red-700 transition"
+            className="text-sm absolute -top-3 right-[140px] text-red-500 hover:text-red-700 transition"
           >
             Clear
           </Button>
